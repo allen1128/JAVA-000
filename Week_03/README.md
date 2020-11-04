@@ -6,4 +6,5 @@
   * Round Robin Load Balancer
   * Add filter to filter out Post Request
   * Netty Server
-  * Async HttpClient to call the backend services
+  * Async HttpClient to call the backend services    
+  * [ ] Netty Client 
