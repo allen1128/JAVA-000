@@ -11,13 +11,12 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
 public class HttpInboundServer {
-    private static Logger logger = LoggerFactory.getLogger(HttpInboundServer.class);
+    private static Logger logger = Logger.getLogger(HttpInboundServer.class);
     private boolean ssl;
     private int port;
     private List<String> candidateBackend;

@@ -6,6 +6,7 @@ import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
+import com.java.gateway.filter.HttpRequestMethodFilter;
 import com.java.gateway.outbound.HttpOutboundAsyncHandler;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -44,7 +45,7 @@ public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
 
             if (uri.contains("/test")) {
                 handlerTest(fullRequest, ctx);
-            } else {
+            } else if (!new HttpRequestMethodFilter().filter(fullRequest, ctx)){
                 handler.handle(fullRequest, ctx);
             }
         } finally {

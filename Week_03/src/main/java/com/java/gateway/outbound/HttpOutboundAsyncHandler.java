@@ -63,6 +63,7 @@ public class HttpOutboundAsyncHandler extends ChannelOutboundHandlerAdapter {
     }
 
     public HttpOutboundAsyncHandler(List<String> candidateBackend) {
+        this();
         this.customHttpEndpointRouter = new CustomHttpEndpointRouter(candidateBackend);
     }
 
