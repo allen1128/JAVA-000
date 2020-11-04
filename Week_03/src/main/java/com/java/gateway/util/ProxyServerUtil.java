@@ -1,3 +1,4 @@
+package com.java.gateway.util;
 
 public class ProxyServerUtil {
     public static String getProxyServers() {

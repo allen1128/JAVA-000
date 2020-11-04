@@ -1,3 +1,4 @@
+package com.java.gateway.inbound;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -13,14 +14,18 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpServer {
-    private static Logger logger = LoggerFactory.getLogger(HttpServer.class);
+import java.util.List;
+
+public class HttpInboundServer {
+    private static Logger logger = LoggerFactory.getLogger(HttpInboundServer.class);
     private boolean ssl;
     private int port;
+    private List<String> candidateBackend;
 
-    public HttpServer(boolean ssl, int port) {
+    public HttpInboundServer(boolean ssl, int port, List<String> candidates) {
         this.ssl = ssl;
         this.port = port;
+        this.candidateBackend = candidates;
     }
 
     public void run() throws Exception {
@@ -47,7 +52,7 @@ public class HttpServer {
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
-                .handler(new LoggingHandler(LogLevel.INFO)).childHandler(new HttpInitializer(sslCtx));
+                .handler(new LoggingHandler(LogLevel.INFO)).childHandler(new HttpInboundInitializer(sslCtx, candidateBackend));
 
             Channel ch = b.bind(port).sync().channel();
             logger.info("开启netty http服务器，监听地址和端口为 " + (ssl ? "https" : "http") + "://127.0.0.1:" + port + '/');

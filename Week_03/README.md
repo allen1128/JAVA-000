@@ -2,5 +2,5 @@
 
 #  Gateway on Netty
 
-  * Configurable workerGroup size
-  * RoundRobin Load Balancer
+  * Configurable WorkerGroup size
+  * Round Robin Load Balancer

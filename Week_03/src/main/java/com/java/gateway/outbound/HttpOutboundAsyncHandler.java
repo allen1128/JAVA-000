@@ -1,8 +1,11 @@
+package com.java.gateway.outbound;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
+import com.java.gateway.router.CustomHttpEndpointRouter;
+import com.java.gateway.util.NamedThreadFactory;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,7 +15,8 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
-import java.io.IOException;
+
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -30,7 +34,9 @@ import org.apache.http.util.EntityUtils;
 
 public class HttpOutboundAsyncHandler extends ChannelOutboundHandlerAdapter {
     private ExecutorService executorService;
-    CloseableHttpAsyncClient httpClient;
+    private CloseableHttpAsyncClient httpClient;
+    private CustomHttpEndpointRouter customHttpEndpointRouter;
+
 
     public HttpOutboundAsyncHandler() {
         int cores = Runtime.getRuntime().availableProcessors() * 2;
@@ -56,8 +62,12 @@ public class HttpOutboundAsyncHandler extends ChannelOutboundHandlerAdapter {
         httpClient.start();
     }
 
+    public HttpOutboundAsyncHandler(List<String> candidateBackend) {
+        this.customHttpEndpointRouter = new CustomHttpEndpointRouter(candidateBackend);
+    }
+
     public void handle(final FullHttpRequest fullRequest, ChannelHandlerContext ctx) {
-        final String url = HttpEndpointRouter.getServer() + fullRequest.uri();
+        final String url = customHttpEndpointRouter.route() + fullRequest.uri();
         executorService.submit(() -> fetchGet(fullRequest, ctx, url));
     }
 
