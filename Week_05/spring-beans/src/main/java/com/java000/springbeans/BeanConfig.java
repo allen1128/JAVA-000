@@ -1,7 +1,7 @@
-import com.java.spring.student.Student;
+package com.java000.springbeans;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
@@ -13,19 +13,19 @@ import javax.annotation.PostConstruct;
 @ImportResource("spring-config.xml")
 public class BeanConfig {
 
-    @Autowired @Qualifier("student1")
-    private Student student1;
+    @Autowired @Qualifier("goodStudent")
+    private Student goodStudent;
 
-    @Autowired @Qualifier("student2")
-    private Student student2;
+    @Autowired @Qualifier("badStudent")
+    private Student badStudent;
 
     @Autowired(required = false) @Qualifier("bullyStudent")
     private Student bullyStudent;
 
     @PostConstruct
-    public void post() {
-        System.out.print(student1.toString());
-        System.out.print(student2.toString());
+    public void postConstruct() {
+        System.out.print(goodStudent.toString());
+        System.out.print(badStudent.toString());
         if (bullyStudent != null) {
             System.out.print(bullyStudent.toString());
         }

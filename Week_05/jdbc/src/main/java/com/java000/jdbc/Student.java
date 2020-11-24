@@ -1,8 +1,11 @@
-package com.java000.springbeans;
+package com.java000.jdbc;
 
 public class Student {
     private int id;
     private String name;
+
+    public Student() {
+    }
 
     public Student(int id, String name) {
         this.id = id;

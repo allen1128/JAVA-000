@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.java000.week5.MyClassConfig
+com.java000.starter.MyClassConfig
