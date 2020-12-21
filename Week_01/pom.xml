@@ -6,7 +6,11 @@
 
     <groupId>com.java000</groupId>
     <artifactId>jvm</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>../Week_09</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
