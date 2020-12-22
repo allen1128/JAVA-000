@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: dubbo-exchange-service
+dubbo:
+  scan:
+    base-packages: io.kimmking.dubbo.demo.consumer
+  registry:
+    address: zookeeper://localhost:2181
+  metadata-report:
+    address: zookeeper://localhost:2181
