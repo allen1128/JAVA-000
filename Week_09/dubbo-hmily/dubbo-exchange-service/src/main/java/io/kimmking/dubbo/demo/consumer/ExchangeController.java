@@ -48,9 +48,4 @@ public class ExchangeController {
     public List<Currency> getCurrencyList() {
         return Arrays.stream(Currency.values()).collect(Collectors.toList());
     }
-
-    @GetMapping("/hi")
-    public String hi() {
-        return "hello world";
-    }
 }

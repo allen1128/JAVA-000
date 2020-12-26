@@ -6,6 +6,7 @@ import io.kimmking.dubbo.demo.api.Money;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -22,9 +23,8 @@ public class AccountDao {
 
     public Account findById(int id) {
         final String sql ="select * from " + whichTable(id) + " where id = ?";
-        List<Account> accountList = jdbcTemplate.query(sql, new Object[] {id}, new RowMapper<Account>() {
-            @Override
-            public Account mapRow(ResultSet resultSet, int i) throws SQLException {
+        try {
+            return (Account) jdbcTemplate.queryForObject(sql, new Object[]{id}, (resultSet, i) -> {
                 Account account = new Account();
                 account.setId(resultSet.getInt("id"));
                 account.setName(resultSet.getString("name"));
@@ -33,38 +33,58 @@ public class AccountDao {
                 account.setUsdWallet(resultSet.getFloat("usd_wallet"));
                 account.setFrozenUsdWallet(resultSet.getFloat("frozen_usd_wallet"));
                 return account;
-            }
-        });
-        return accountList.size() == 0 ? null : accountList.get(0);
+            });
+        } catch (EmptyResultDataAccessException ex) {
+            logger.warn("no result found for id={}", id);
+            return null;
+        }
     }
 
-    public boolean add(Account account, Money money) {
-        return update(account, money);
-    }
-
-    public boolean deduct(Account account, Money money) {
-        Money newmoney = new Money(money);
-        newmoney.setAmount(-newmoney.getAmount());
-        return update(account, newmoney);
-    }
-
-    public boolean confirm(Account account, Currency currency) {
-        final String frozencurrencyField = getfrozenCurrencyField(currency);
+    public boolean update(Account account, Money from, Money to) {
+        final String frozenField = getfrozenCurrencyField(to.getCurrency());
+        final String currField = getCurrencyField(from.getCurrency());
         final String sql = "update " + whichTable(account.getId()) +
-                " set " + frozencurrencyField + " =  0 " +
-                "where id = ?";
-        return jdbcTemplate.update(sql, account.getId()) > 0;
+                "set " + frozenField + " = " + frozenField + " + ?, " +
+                currField + " = " + currField + " - ? " +
+                " where id = ?";
+        logger.info("update sql={}", sql);
+        return jdbcTemplate.update(sql, new Object[] {to.getAmount(), from.getAmount(), account.getId()}) > 0;
     }
 
-    public boolean cancel(Account account, Currency currency) {
-        final String frozencurrencyField = getfrozenCurrencyField(currency);
-        final String currencyField = getCurrencyField(currency);
+    public boolean confirm(Account account, Money to) {
+        final String frozencurrencyField = getfrozenCurrencyField(to.getCurrency());
+        final String currencyField = getCurrencyField(to.getCurrency());
 
         final String sql = "update " + whichTable(account.getId()) +
-                "set " + frozencurrencyField + " =  0, " +
-                "set " + currencyField + " = frozencurrencyField + currencyField " +
-                "where id = ?";
-        return jdbcTemplate.update(sql, account.getId()) > 0;
+                " set " + frozencurrencyField + " = " + frozencurrencyField + " - " + to.getAmount() + ", " +
+                currencyField + " = " + currencyField + "+" + to.getAmount() +
+                " where id = ? and " + frozencurrencyField + " > 0";
+        logger.info("confirm sql={}", sql);
+        return jdbcTemplate.update(sql, new Object[] {account.getId()}) > 0;
+    }
+
+    public boolean cancel(Account account, Money from, Money to) {
+        final String frozencurrencyField = getfrozenCurrencyField(to.getCurrency());
+        final String currencyField = getCurrencyField(from.getCurrency());
+
+        final String sql = "update " + whichTable(account.getId()) +
+                " set " + frozencurrencyField + " = " + frozencurrencyField + " - " + to.getAmount() + ", " +
+                currencyField + " = " + currencyField + "+" + from.getAmount() +
+                " where id = ? and " + frozencurrencyField + " > 0";
+        logger.info("cancel sql={}", sql);
+        return jdbcTemplate.update(sql, new Object[] {account.getId()}) > 0;
+    }
+
+    public boolean cancelConfirmed(Account account, Money from, Money to) {
+        final String toCurrencyField = getCurrencyField(to.getCurrency());
+        final String fromCurrencyField = getCurrencyField(from.getCurrency());
+
+        final String sql = "update " + whichTable(account.getId()) +
+                " set " + toCurrencyField + " = " + toCurrencyField + " - " + to.getAmount() + ", " +
+                fromCurrencyField + " = " + fromCurrencyField + "+" + from.getAmount() +
+                " where id = ? and " + toCurrencyField + " > 0";
+        logger.info("cancel sql={}", sql);
+        return jdbcTemplate.update(sql, new Object[] {account.getId()}) > 0;
     }
 
     private String whichTable(int id) {
@@ -77,16 +97,5 @@ public class AccountDao {
 
     private String getCurrencyField(Currency currency) {
         return currency.toString().toLowerCase() + "_wallet";
-    }
-
-    private boolean update(Account account, Money money) {
-        final String frozenCurrField = getfrozenCurrencyField(money.getCurrency());
-        final String currField = getCurrencyField(money.getCurrency());
-        final String sql = "update " + whichTable(account.getId()) +
-                "set " + frozenCurrField + " = " + frozenCurrField + " + ?, " +
-                "set " + currField + " = " + currField + " - ? " +
-                "where id = ?";
-        return jdbcTemplate.update(sql, money.getAmount(), money.getAmount(), account.getId()) > 0;
-
     }
 }

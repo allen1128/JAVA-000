@@ -6,6 +6,8 @@ public class Money implements Serializable {
     private Currency currency;
     private float amount;
 
+    public Money() {}
+
     public Money(Currency currency, float amount) {
         this.currency = currency;
         this.amount = amount;

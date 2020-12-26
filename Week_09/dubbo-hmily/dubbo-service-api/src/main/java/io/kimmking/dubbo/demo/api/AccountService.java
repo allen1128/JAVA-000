@@ -4,10 +4,10 @@ public interface AccountService {
 
     Account findById(int id);
 
-    boolean update(Account account, Money from, Money to);
+    boolean update(UpdateAccountRequest updateAccountRequest);
 
-    boolean confirm(Account account, Money from, Money to);
+    boolean cancel(UpdateAccountRequest updateAccountRequest);
 
-    boolean cancel(Account account, Money from, Money to);
+    boolean cancelConfirmed(UpdateAccountRequest updateAccountRequest);
 
 }
