@@ -10,6 +10,7 @@
 <version>1.0-SNAPSHOT</version>
 <modules>
     <module>../Week_06</module>
+    <module>../Week_07</module>
 </modules>
 
 <parent>
