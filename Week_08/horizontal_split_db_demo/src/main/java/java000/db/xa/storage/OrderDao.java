@@ -1,4 +1,4 @@
-package java000.db.ha.order;
+package java000.db.xa.storage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,15 +11,14 @@ import java.sql.SQLException;
 
 @Component
 public class OrderDao {
-
     @Autowired
     private DataSource dataSource;
 
     public Order findById(int id) {
         JdbcTemplate jdbcTemplate = getTemplate();
-        String sql = "select * from camp.order where id = ?";
+        String sql = "select * from " + whichTable(0, id) + " where id = ? union all select * from " + whichTable(1, id) + " where id = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, new Object[]{id}, new RowMapper<Order>() {
+            return jdbcTemplate.queryForObject(sql, new Object[]{id, id}, new RowMapper<Order>() {
                 @Override
                 public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
                     Order order = new Order();
@@ -38,13 +37,27 @@ public class OrderDao {
         }
     }
 
+    private String whichTable(int dbNum, int orderId) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("camp_" + dbNum);
+        sb.append(".order_" + (orderId % 16));
+        return sb.append(" ").toString();
+    }
+
+    private String whichSchemaAndTable(int userId, int orderId) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("camp_" + (userId % 2));
+        sb.append(".order_" + (orderId % 16));
+        return sb.append(" ").toString();
+    }
+
     private JdbcTemplate getTemplate() {
         return new JdbcTemplate(dataSource);
     }
 
     public void add(Order order) {
-        String sql = "insert into camp.order (id, user_id, " +
-                "commodity_id, quantity, created_ts, updated_ts) " +
+        String sql = "insert into " + whichSchemaAndTable(order.getUser_id(), order.getId()) +
+                " (id, user_id, commodity_id, quantity, created_ts, updated_ts) " +
                 "values(?, ?, ?, ?, ?, ?) ";
         int res = getTemplate().update(sql, new Object[] {
                 order.getId(), order.getUser_id(),

@@ -4,7 +4,7 @@ USE `camp`;
 
 DROP TABLE IF EXISTS `commodity`;
 DROP TABLE IF EXISTS `user`;
-DROP TABLE IF EXISTS `order`;
+DROP TABLE IF EXISTS `commodity`;
 
 CREATE TABLE `commodity` (
   `id` bigint NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
-CREATE TABLE `order` (
+CREATE TABLE `commodity` (
   `id` bigint NOT NULL,
   `user_id` bigint NOT NULL,
   `commodity_id` bigint NOT NULL,
@@ -54,7 +54,7 @@ BEGIN
     DECLARE counter INT DEFAULT 1;
 
     WHILE counter < total_count DO
-        INSERT INTO `order`
+        INSERT INTO `commodity`
             values(counter, 1, 1, 1, CURRENT_TIMESTAMP( ), CURRENT_TIMESTAMP( ));
         SET counter = counter + 1;
     END WHILE;

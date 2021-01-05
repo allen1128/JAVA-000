@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class RoutingDataSource extends AbstractRoutingDataSource {
 
-    private final static ThreadLocal<DataSourceType> dataSourceThreadLocal = new ThreadLocal<>();
+    private final static ThreadLocal<java000.db.ha.datasource.DataSourceType> dataSourceThreadLocal = new ThreadLocal<>();
 
     public RoutingDataSource(DataSource dataSource, Map<Object, Object> targetDataSources) {
         super.setDefaultTargetDataSource(dataSource);

@@ -8,25 +8,24 @@
         <version>2.0.4.RELEASE</version>
         <relativePath/>
     </parent>
-
+    <groupId>io.kimmking</groupId>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>sql-db-ha</artifactId>
+    <artifactId>db-migration</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <modules>
-        <module>db-router-demo</module>
-        <module>sharding-sphere-db-router-demo</module>
+        <module>horizontal_split_db_demo</module>
+        <module>shardingsphere-xa-demo</module>
     </modules>
 
-    <groupId>io.kimmking</groupId>
-    <version>0.0.1-SNAPSHOT</version>
-
     <properties>
-        <spring-boot.version>1.5.17.RELEASE</spring-boot.version>
+        <spring-boot.version>2.0.4.RELEASE</spring-boot.version>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <swagger.version>2.6.1</swagger.version>
         <mysql.version>5.1.46</mysql.version>
-        <sharding.version>2.0.3</sharding.version>
+        <sharding.version>5.0.0-alpha</sharding.version>
     </properties>
 
     <dependencyManagement>
@@ -40,6 +39,22 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-jdbc</artifactId>
                 <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+                <version>${sharding.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-transaction-xa-core</artifactId>
+                <version>${sharding.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>2.2.5</version>
             </dependency>
 
         </dependencies>
@@ -76,10 +91,10 @@
             <artifactId>springfox-swagger2</artifactId>
             <version>${swagger.version}</version>
             <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<artifactId>guava</artifactId>-->
-                    <!--<groupId>com.google.guava</groupId>-->
-                <!--</exclusion>-->
+            <!--<exclusion>-->
+            <!--<artifactId>guava</artifactId>-->
+            <!--<groupId>com.google.guava</groupId>-->
+            <!--</exclusion>-->
             <!--</exclusions>-->
         </dependency>
         <dependency>
@@ -88,6 +103,5 @@
             <version>${swagger.version}</version>
         </dependency>
     </dependencies>
-
 
 </project>

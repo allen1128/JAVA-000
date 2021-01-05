@@ -13,7 +13,7 @@ CREATE procedure create_records(
 BEGIN
     DECLARE counter INT DEFAULT 1;
     WHILE counter <= total_count DO
-        INSERT INTO `order`
+        INSERT INTO `commodity`
             values(start_index + counter, 1, 1, 1, CURRENT_TIMESTAMP( ), CURRENT_TIMESTAMP( ));
         SET counter = counter + 1;
     END WHILE;
@@ -37,7 +37,7 @@ BEGIN
 	START TRANSACTION;
     WHILE counter <= total_count DO
 
-        INSERT INTO `order`
+        INSERT INTO `commodity`
             values(start_index + counter, 1, 1, 1, CURRENT_TIMESTAMP( ), CURRENT_TIMESTAMP( ));
         SET counter = counter + 1;
 
