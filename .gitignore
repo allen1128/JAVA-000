@@ -3,3 +3,5 @@ out/
 **/target/
 .idea/
 logs/
+**/resources/nodes-*.conf
+Week_12/redis-cluster/src/main/resources/nodes-5.conf
