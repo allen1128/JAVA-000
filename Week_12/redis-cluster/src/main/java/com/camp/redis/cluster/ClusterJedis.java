@@ -1,6 +1,10 @@
 package com.camp.redis.cluster;
 
+import com.hazelcast.core.Cluster;
 import lombok.SneakyThrows;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPoolConfig;
@@ -9,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public final class ClusterJedis {
+
+    private static final Logger logger = LogManager.getLogger(ClusterJedis.class);
 
     private static JedisCluster CLUSTER = createJedisCluster();
 
@@ -38,6 +44,8 @@ public final class ClusterJedis {
         //对拿到的connection进行validateObject校验
         jedisPoolConfig.setTestOnBorrow(true);
         jedisCluster = new JedisCluster(hostAndPortsSet, jedisPoolConfig);
+
+        logger.info("jedisCluster={}", jedisCluster.toString());
         return jedisCluster;
     }
 
