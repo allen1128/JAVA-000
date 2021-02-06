@@ -84,3 +84,5 @@ Kafka的基本概念有broker, topic, partition, producer, consumer, consumer gr
 kafka可以是单机模式或者通过ZK实现集群安装部署
 
 常见的MQ还有ActiveMQ， RabbitMQ，RocketMQ，Pulsar等等
+
+![脑图](https://raw.githubusercontent.com/allen1128/JAVA-000/main/Final/overview.png)
