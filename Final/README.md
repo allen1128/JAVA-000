@@ -1,4 +1,4 @@
-# Java进阶训练营
+# Java进阶训练营毕业项目
 
 ## JVM
 Java语言是运行时跨平台的语言。JVM是为实现这一特性而诞生的。不同的平台会有不同的JVM来隔离平台的区别来执行同样的代码。Java文件有编译器编译成CLASS文件。主类执行时会启动一个JVM实例，
@@ -78,3 +78,9 @@ MQ的四大作用
 - 系统解耦：系统不直接调用，降低依赖，特别是不在线也能保持通信最终完成。
 - 削峰平谷：压力大的时候，缓冲部分请求消息，类似于背压处理。
 - 可靠通信：提供多种消息模式、服务质量、顺序保障等。
+
+Kafka消息中间件的介绍包含其持久化能力，高吞吐，顺序传输，水平扩展等等特点。
+Kafka的基本概念有broker, topic, partition, producer, consumer, consumer group.
+kafka可以是单机模式或者通过ZK实现集群安装部署
+
+常见的MQ还有ActiveMQ， RabbitMQ，RocketMQ，Pulsar等等
